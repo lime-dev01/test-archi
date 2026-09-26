@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATELIER VECTR // ARCHITECTURE INTÉRIEURE</title>
+    <title>ATELIER VECTR // VISITE 360°</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Pannellum CSS pour le rendu 360 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
     <style>
         :root {
           --bg-deep: #131A17;        
-          --bg-card: rgba(19, 26, 23, 0.88); 
+          --bg-card: rgba(19, 26, 23, 0.9); 
           --accent-gold: #D4AF37;    
           --text-main: #F4F4F2;      
           --text-muted: #9DA8A2;     
@@ -29,39 +31,17 @@
           height: 100vh;
         }
 
-        /* Image d'arrière-plan immersive avec effet de zoom subtil */
-        .bg-image-container {
+        /* Conteneur panorama 360 en plein écran */
+        #panorama {
+          width: 100vw;
+          height: 100vh;
           position: fixed;
           top: 0;
           left: 0;
-          width: 100vw;
-          height: 100vh;
           z-index: 1;
-          overflow: hidden;
         }
 
-        .bg-image-container img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          filter: brightness(0.65) contrast(1.1);
-          transform: scale(1);
-          transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), filter 0.6s ease;
-        }
-
-        /* Voile assombrissant pour faire ressortir le texte */
-        .overlay-gradient {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100vw;
-          height: 100vh;
-          background: linear-gradient(to right, rgba(19, 26, 23, 0.85) 0%, rgba(19, 26, 23, 0.4) 100%);
-          z-index: 2;
-          pointer-events: none;
-        }
-
-        /* Interface utilisateur (UI) */
+        /* Interface utilisateur superposée */
         .ui-layer {
           position: fixed;
           top: 0;
@@ -97,74 +77,72 @@
           color: var(--accent-gold);
         }
 
-        .nav-menu {
-          display: flex;
-          gap: 2.5rem;
-          font-size: 0.85rem;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-        }
-
-        .nav-menu button {
-          background: none;
-          border: none;
-          color: var(--text-muted);
-          font-family: inherit;
-          font-size: inherit;
-          letter-spacing: inherit;
-          cursor: pointer;
-          transition: color 0.3s ease;
-        }
-
-        .nav-menu button:hover, .nav-menu button.active {
-          color: var(--accent-gold);
-        }
-
         .instruction-bar {
           font-size: 0.75rem;
           letter-spacing: 2px;
           color: var(--text-muted);
           text-transform: uppercase;
+          background: rgba(19, 26, 23, 0.7);
+          padding: 0.5rem 1rem;
+          display: inline-block;
+          backdrop-filter: blur(5px);
+          border-left: 2px solid var(--accent-gold);
         }
 
-        /* Panneaux de contenu One-Page */
-        .content-panel {
+        /* Fenêtre modale / Panneau d'information au clic sur un point 360 */
+        .info-modal {
           position: absolute;
           top: 50%;
-          left: 4rem;
-          transform: translateY(-50%) translateX(-20px);
-          width: 500px;
+          left: 50%;
+          transform: translate(-50%, -50%) scale(0.95);
+          width: 450px;
           background: var(--bg-card);
           backdrop-filter: blur(16px);
-          border: 1px solid rgba(212, 175, 55, 0.25);
-          padding: 3.5rem;
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          padding: 3rem;
           opacity: 0;
           visibility: hidden;
-          transition: opacity 0.6s ease, transform 0.6s ease;
-          pointer-events: none;
+          transition: all 0.4s ease;
+          z-index: 20;
         }
 
-        .content-panel.active {
+        .info-modal.active {
           opacity: 1;
           visibility: visible;
-          pointer-events: auto;
-          transform: translateY(-50%) translateX(0);
+          transform: translate(-50%, -50%) scale(1);
         }
 
-        .content-panel h2 {
+        .info-modal h2 {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 2.8rem;
+          font-size: 2.2rem;
           font-weight: 400;
           margin-bottom: 1rem;
           letter-spacing: 1px;
-          line-height: 1.1;
         }
 
-        .content-panel p {
+        .info-modal p {
           color: var(--text-muted);
           font-size: 0.95rem;
           line-height: 1.7;
           margin-bottom: 2rem;
+        }
+
+        .close-btn {
+          position: absolute;
+          top: 1.5rem;
+          right: 1.5rem;
+          background: none;
+          border: none;
+          color: var(--text-main);
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 0.8rem;
+          letter-spacing: 1px;
+          cursor: pointer;
+          transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+          color: var(--accent-gold);
         }
 
         .btn-gold {
@@ -184,81 +162,89 @@
           background-color: var(--accent-gold);
           color: var(--bg-deep);
         }
+
+        /* Style des points cliquables (Hotspots) sur le panorama 360 */
+        .pnlm-hotspot-base {
+          border-radius: 50%;
+          cursor: pointer;
+          background-color: var(--accent-gold);
+          box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+          transition: transform 0.3s ease;
+        }
+        .pnlm-hotspot-base:hover {
+          transform: scale(1.3);
+        }
     </style>
 </head>
 <body>
 
-    <!-- Arrière-plan photo d'intérieur cosy et luxueux -->
-    <div class="bg-image-container">
-        <img id="room-bg" src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=85" alt="Intérieur Cosy Atelier VECTR">
-    </div>
-    <div class="overlay-gradient"></div>
+    <!-- Conteneur Panorama 360 -->
+    <div id="panorama"></div>
 
-    <!-- Interface utilisateur -->
+    <!-- Interface utilisateur superposée -->
     <div class="ui-layer">
         <header class="interactive">
             <div class="logo">ATELIER <span>VECTR</span></div>
-            <nav class="nav-menu">
-                <button onclick="switchSection('accueil', 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=85')" class="active">Accueil</button>
-                <button onclick="switchSection('studio', 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2000&q=85')">Studio</button>
-                <button onclick="switchSection('projets', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=85')">Projets</button>
-                <button onclick="switchSection('contact', 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=2000&q=85')">Contact</button>
-            </nav>
+            <div class="instruction-bar">
+                [ VISITE IMMERSIVE ] // Cliquez et glissez pour explorer la pièce à 360°
+            </div>
         </header>
 
-        <!-- Panneau Accueil -->
-        <div id="panel-accueil" class="content-panel active interactive">
-            <h2>L'Art de l'Espace Intérieur</h2>
-            <p>Conception d'intérieurs feutrés, sur-mesure et intemporels. Nous façonnons des sanctuaires résidentiels où la matière et la lumière ne font qu'un.</p>
-            <button class="btn-gold" onclick="document.querySelectorAll('.nav-menu button')[2].click()">Découvrir nos univers</button>
-        </div>
-
-        <!-- Panneau Studio -->
-        <div id="panel-studio" class="content-panel interactive">
+        <!-- Panneaux modaux déclenchés par les points 360 -->
+        <div id="modal-studio" class="info-modal interactive">
+            <button class="close-btn" onclick="closeModal()">[ FERMER ]</button>
             <h2>Le Studio & La Vision</h2>
-            <p>Une écriture architecturale axée sur la noblesse des matières brutes, les tons enveloppants et une maîtrise absolue de la lumière douce et chaleureuse.</p>
-            <button class="btn-gold">En savoir plus</button>
+            <p>Notre approche de l'architecture d'intérieur privilégie la pureté des lignes, l'épure des volumes et l'intégration de matériaux nobles et pérennes.</p>
+            <button class="btn-gold" onclick="alert('Redirection vers la page Studio')">Découvrir l'agence</button>
         </div>
 
-        <!-- Panneau Projets -->
-        <div id="panel-projets" class="content-panel interactive">
-            <h2>Réalisations & Résidences</h2>
-            <p>Découvrez nos derniers chantiers livrés : appartements haussmanniens réinventés, lofts feutrés et villas contemporaines baignées de sérénité.</p>
-            <button class="btn-gold">Voir la galerie</button>
-        </div>
-
-        <!-- Panneau Contact -->
-        <div id="panel-contact" class="content-panel interactive">
-            <h2>Initier un Projet</h2>
-            <p>Vous avez un projet d'architecture d'intérieur d'envergure ? Discutons de votre vision et de l'accompagnement sur-mesure de notre atelier.</p>
-            <button class="btn-gold">Prendre contact</button>
-        </div>
-
-        <div class="instruction-bar">
-            [ Expérience One-Page Immersive ] // Naviguez via le menu supérieur pour explorer chaque facette de l'atelier
+        <div id="modal-projets" class="info-modal interactive">
+            <button class="close-btn" onclick="closeModal()">[ FERMER ]</button>
+            <h2>Résidence Saint-Honoré</h2>
+            <p>Appartement de 240m² entièrement restructuré. Utilisation de chêne fumé brossé, de laiton vieilli et de travertin mat.</p>
+            <button class="btn-gold" onclick="alert('Redirection vers les projets')">Voir les détails</button>
         </div>
     </div>
 
+    <!-- Pannellum JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
     <script>
-        function switchSection(sectionId, imageUrl) {
-            // Gestion des panneaux de texte
-            document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('panel-' + sectionId).classList.add('active');
+        // Initialisation de la visionneuse 360°
+        pannellum.viewer('panorama', {
+            "type": "equirectangular",
+            "panorama": "https://pannellum.org/images/alma.jpg", // Image 360 de test (à remplacer par ton panorama d'archi)
+            "autoLoad": true,
+            "compass": false,
+            "hfov": 100,
+            "hotSpots": [
+                {
+                    "pitch": -10,
+                    "yaw": 0,
+                    "type": "info",
+                    "text": "Le Studio Atelier VECTR (Cliquer)",
+                    "clickHandlerFunc": function() {
+                        openModal('modal-studio');
+                    }
+                },
+                {
+                    "pitch": 5,
+                    "yaw": 90,
+                    "type": "info",
+                    "text": "Projet Phare : Résidence Saint-Honoré (Cliquer)",
+                    "clickHandlerFunc": function() {
+                        openModal('modal-projets');
+                    }
+                }
+            ]
+        });
 
-            // Gestion des boutons actifs
-            document.querySelectorAll('.nav-menu button').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+        function openModal(modalId) {
+            document.querySelectorAll('.info-modal').forEach(m => m.classList.remove('active'));
+            document.getElementById(modalId).classList.add('active');
+        }
 
-            // Effet de transition fluide sur l'image d'arrière-plan
-            const bgImg = document.getElementById('room-bg');
-            bgImg.style.transform = 'scale(1.05)';
-            bgImg.style.filter = 'brightness(0.4) blur(4px)';
-
-            setTimeout(() => {
-                bgImg.src = imageUrl;
-                bgImg.style.transform = 'scale(1)';
-                bgImg.style.filter = 'brightness(0.65) contrast(1.1)';
-            }, 300);
+        function closeModal() {
+            document.querySelectorAll('.info-modal').forEach(m => m.classList.remove('active'));
         }
     </script>
 </body>
