@@ -247,26 +247,26 @@
     <!-- Pannellum JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
     <script>
-        // Utilisation d'une image 360 de test hébergée de manière stable par Pannellum
+        // Utilisation d'un panorama 360 d'intérieur propre (Maison / Pièce moderne)
         const viewer = pannellum.viewer('panorama', {
             "type": "equirectangular",
-            "panorama": "https://pannellum.org/images/alma.jpg", 
+            "panorama": "https://pannellum.org/images/ceres.jpg", // Panorama d'intérieur de type pièce de vie / architecture
             "autoLoad": true,
-            "autoRotate": -2,
+            "autoRotate": -1.5,
             "compass": false,
             "hfov": 100,
             "hotSpots": [
                 {
-                    "pitch": -5,
-                    "yaw": -30,
+                    "pitch": -2,
+                    "yaw": -25,
                     "type": "info",
                     "cssClass": "custom-hotspot",
                     "createTooltipFunc": hotspotDiv,
                     "createTooltipArgs": "studio"
                 },
                 {
-                    "pitch": 0,
-                    "yaw": 45,
+                    "pitch": 4,
+                    "yaw": 50,
                     "type": "info",
                     "cssClass": "custom-hotspot",
                     "createTooltipFunc": hotspotDiv,
@@ -298,7 +298,7 @@
 
         function closeModal() {
             document.querySelectorAll('.info-modal').forEach(m => m.classList.remove('active'));
-            viewer.setAutoRotate(-2);
+            viewer.setAutoRotate(-1.5);
         }
     </script>
 </body>
