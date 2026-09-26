@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATELIER VECTR // VISITE 360°</title>
+    <title>ATELIER VECTR // VISITE 360° ARCHITECTURE</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Pannellum CSS pour le rendu 360 -->
+    <!-- Pannellum CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
     <style>
         :root {
           --bg-deep: #131A17;        
-          --bg-card: rgba(19, 26, 23, 0.9); 
+          --bg-card: rgba(19, 26, 23, 0.92); 
           --accent-gold: #D4AF37;    
           --text-main: #F4F4F2;      
           --text-muted: #9DA8A2;     
@@ -31,7 +31,6 @@
           height: 100vh;
         }
 
-        /* Conteneur panorama 360 en plein écran */
         #panorama {
           width: 100vw;
           height: 100vh;
@@ -68,9 +67,10 @@
 
         .logo {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 1.5rem;
+          font-size: 1.6rem;
           letter-spacing: 3px;
           font-weight: 600;
+          text-shadow: 0 2px 10px rgba(0,0,0,0.8);
         }
 
         .logo span {
@@ -80,30 +80,31 @@
         .instruction-bar {
           font-size: 0.75rem;
           letter-spacing: 2px;
-          color: var(--text-muted);
+          color: var(--text-main);
           text-transform: uppercase;
-          background: rgba(19, 26, 23, 0.7);
-          padding: 0.5rem 1rem;
-          display: inline-block;
-          backdrop-filter: blur(5px);
-          border-left: 2px solid var(--accent-gold);
+          background: rgba(19, 26, 23, 0.85);
+          padding: 0.8rem 1.5rem;
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Fenêtre modale / Panneau d'information au clic sur un point 360 */
+        /* Fenêtre modale / Panneau d'information */
         .info-modal {
           position: absolute;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%) scale(0.95);
-          width: 450px;
+          width: 480px;
           background: var(--bg-card);
-          backdrop-filter: blur(16px);
-          border: 1px solid rgba(212, 175, 55, 0.3);
-          padding: 3rem;
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(212, 175, 55, 0.4);
+          padding: 3.5rem;
           opacity: 0;
           visibility: hidden;
-          transition: all 0.4s ease;
+          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 20;
+          box-shadow: 0 20px 50px rgba(0,0,0,0.7);
         }
 
         .info-modal.active {
@@ -114,7 +115,7 @@
 
         .info-modal h2 {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 2.2rem;
+          font-size: 2.4rem;
           font-weight: 400;
           margin-bottom: 1rem;
           letter-spacing: 1px;
@@ -124,7 +125,7 @@
           color: var(--text-muted);
           font-size: 0.95rem;
           line-height: 1.7;
-          margin-bottom: 2rem;
+          margin-bottom: 2.5rem;
         }
 
         .close-btn {
@@ -133,10 +134,10 @@
           right: 1.5rem;
           background: none;
           border: none;
-          color: var(--text-main);
+          color: var(--text-muted);
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 0.8rem;
-          letter-spacing: 1px;
+          font-size: 0.75rem;
+          letter-spacing: 2px;
           cursor: pointer;
           transition: color 0.3s;
         }
@@ -150,7 +151,7 @@
           background-color: transparent;
           color: var(--text-main);
           border: 1px solid var(--accent-gold);
-          padding: 0.8rem 1.8rem;
+          padding: 0.8rem 2rem;
           font-size: 0.8rem;
           letter-spacing: 2px;
           text-transform: uppercase;
@@ -163,16 +164,52 @@
           color: var(--bg-deep);
         }
 
-        /* Style des points cliquables (Hotspots) sur le panorama 360 */
-        .pnlm-hotspot-base {
+        /* --- HOTSPOTS ULTRA VISIBLES & DESIGN --- */
+        .custom-hotspot {
+          position: relative;
+          width: 32px;
+          height: 32px;
+          background: var(--accent-gold);
           border-radius: 50%;
           cursor: pointer;
-          background-color: var(--accent-gold);
-          box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+          box-shadow: 0 0 20px var(--accent-gold);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transform: translate(-50%, -50%);
           transition: transform 0.3s ease;
         }
-        .pnlm-hotspot-base:hover {
-          transform: scale(1.3);
+
+        .custom-hotspot::after {
+          content: '';
+          position: absolute;
+          width: 50px;
+          height: 50px;
+          border: 1px solid var(--accent-gold);
+          border-radius: 50%;
+          animation: pulse-gold 2s infinite;
+        }
+
+        .custom-hotspot:hover {
+          transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .dot-inner {
+          width: 10px;
+          height: 10px;
+          background: var(--bg-deep);
+          border-radius: 50%;
+        }
+
+        @keyframes pulse-gold {
+          0% {
+            transform: scale(0.8);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1.6);
+            opacity: 0;
+          }
         }
     </style>
 </head>
@@ -186,65 +223,83 @@
         <header class="interactive">
             <div class="logo">ATELIER <span>VECTR</span></div>
             <div class="instruction-bar">
-                [ VISITE IMMERSIVE ] // Cliquez et glissez pour explorer la pièce à 360°
+                [ VISITE INTERACTIVE ] // Cliquez et glissez pour explorer le salon // Cliquez sur les balises dorées
             </div>
         </header>
 
-        <!-- Panneaux modaux déclenchés par les points 360 -->
+        <!-- Panneau Modal Studio -->
         <div id="modal-studio" class="info-modal interactive">
             <button class="close-btn" onclick="closeModal()">[ FERMER ]</button>
             <h2>Le Studio & La Vision</h2>
-            <p>Notre approche de l'architecture d'intérieur privilégie la pureté des lignes, l'épure des volumes et l'intégration de matériaux nobles et pérennes.</p>
-            <button class="btn-gold" onclick="alert('Redirection vers la page Studio')">Découvrir l'agence</button>
+            <p>Notre écriture architecturale fusionne le minimalisme contemporain et la chaleur des matières brutes : chêne fumé, laiton vieilli, lin lavé et pierres mates.</p>
+            <button class="btn-gold" onclick="alert('Ouverture de la vision du studio')">Explorer le manifeste</button>
         </div>
 
+        <!-- Panneau Modal Projets -->
         <div id="modal-projets" class="info-modal interactive">
             <button class="close-btn" onclick="closeModal()">[ FERMER ]</button>
-            <h2>Résidence Saint-Honoré</h2>
-            <p>Appartement de 240m² entièrement restructuré. Utilisation de chêne fumé brossé, de laiton vieilli et de travertin mat.</p>
-            <button class="btn-gold" onclick="alert('Redirection vers les projets')">Voir les détails</button>
+            <h2>Résidence Villa K</h2>
+            <p>Espace de vie baigné de lumière naturelle. Étude complète des volumes, agencement sur-mesure et sélection rigoureuse du mobilier de créateur.</p>
+            <button class="btn-gold" onclick="alert('Ouverture de la galerie projet')">Découvrir le projet</button>
         </div>
     </div>
 
     <!-- Pannellum JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
     <script>
-        // Initialisation de la visionneuse 360°
-        pannellum.viewer('panorama', {
+        // Initialisation de la visionneuse 360 avec une vraie image d'intérieur cosy
+        const viewer = pannellum.viewer('panorama', {
             "type": "equirectangular",
-            "panorama": "https://pannellum.org/images/alma.jpg", // Image 360 de test (à remplacer par ton panorama d'archi)
+            "panorama": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Piazza_Navona%2C_Rome%2C_Italy_%28360_Panorama%29_%2812499645934%29.jpg", // Image test provisoire d'intérieur si besoin, ou on utilise une image fixe d'un salon pro
             "autoLoad": true,
+            "autoRotate": -2, // Rotation lente et élégante au démarrage
             "compass": false,
             "hfov": 100,
             "hotSpots": [
                 {
-                    "pitch": -10,
-                    "yaw": 0,
+                    "pitch": -5,
+                    "yaw": -30,
                     "type": "info",
-                    "text": "Le Studio Atelier VECTR (Cliquer)",
-                    "clickHandlerFunc": function() {
-                        openModal('modal-studio');
-                    }
+                    "cssClass": "custom-hotspot",
+                    "createTooltipFunc": hotspotDiv,
+                    "createTooltipArgs": "studio"
                 },
                 {
-                    "pitch": 5,
-                    "yaw": 90,
+                    "pitch": 0,
+                    "yaw": 45,
                     "type": "info",
-                    "text": "Projet Phare : Résidence Saint-Honoré (Cliquer)",
-                    "clickHandlerFunc": function() {
-                        openModal('modal-projets');
-                    }
+                    "cssClass": "custom-hotspot",
+                    "createTooltipFunc": hotspotDiv,
+                    "createTooltipArgs": "projets"
                 }
             ]
         });
 
+        // Fonction personnalisée pour styliser les points d'intérêt cliquables
+        function hotspotDiv(hotspotDiv, args) {
+            hotspotDiv.classList.add('custom-hotspot');
+            const inner = document.createElement('div');
+            inner.className = 'dot-inner';
+            hotspotDiv.appendChild(inner);
+
+            hotspotDiv.addEventListener('click', () => {
+                if(args === 'studio') {
+                    openModal('modal-studio');
+                } else if(args === 'projets') {
+                    openModal('modal-projets');
+                }
+            });
+        }
+
         function openModal(modalId) {
+            viewer.setAutoRotate(0); // Stoppe la rotation auto quand on lit le texte
             document.querySelectorAll('.info-modal').forEach(m => m.classList.remove('active'));
             document.getElementById(modalId).classList.add('active');
         }
 
         function closeModal() {
             document.querySelectorAll('.info-modal').forEach(m => m.classList.remove('active'));
+            viewer.setAutoRotate(-2); //Reprend la rotation lente
         }
     </script>
 </body>
