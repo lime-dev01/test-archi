@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATELIER VECTR // ARCHITECTURE INTÉRIEURE</title>
-    <!-- Polices haut de gamme et élégantes -->
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-          --bg-deep: #131A17;        /* Vert olive très sombre et feutré */
-          --bg-card: rgba(22, 32, 28, 0.85); /* Verre fumé vert */
-          --accent-gold: #D4AF37;    /* Or discret / champagne pour le luxe */
-          --text-main: #F4F4F2;      /* Blanc cassé chaleureux */
-          --text-muted: #9DA8A2;     /* Gris feutré */
+          --bg-deep: #131A17;        
+          --bg-card: rgba(19, 26, 23, 0.9); 
+          --accent-gold: #D4AF37;    
+          --text-main: #F4F4F2;      
+          --text-muted: #9DA8A2;     
         }
 
         * {
@@ -30,7 +29,6 @@
           height: 100vh;
         }
 
-        /* Canvas 3D en arrière-plan plein écran */
         #webgl-container {
           position: fixed;
           top: 0;
@@ -40,7 +38,6 @@
           z-index: 1;
         }
 
-        /* Interface utilisateur (UI) superposée */
         .ui-layer {
           position: fixed;
           top: 0;
@@ -48,7 +45,7 @@
           width: 100vw;
           height: 100vh;
           z-index: 10;
-          pointer-events: none; /* Laisse passer les clics vers la 3D par défaut */
+          pointer-events: none;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -56,10 +53,9 @@
         }
 
         .interactive {
-          pointer-events: auto; /* Réactive les clics sur les éléments cliquables */
+          pointer-events: auto;
         }
 
-        /* Header / Navigation */
         header {
           display: flex;
           justify-content: space-between;
@@ -100,7 +96,6 @@
           color: var(--accent-gold);
         }
 
-        /* Instructions minimalistes en bas */
         .instruction-bar {
           font-size: 0.75rem;
           letter-spacing: 2px;
@@ -108,7 +103,6 @@
           text-transform: uppercase;
         }
 
-        /* Panneaux de contenu (affichés selon la section active) */
         .content-panel {
           position: absolute;
           top: 50%;
@@ -116,7 +110,7 @@
           transform: translateY(-50%);
           width: 450px;
           background: var(--bg-card);
-          backdrop-filter: blur(12px);
+          backdrop-filter: blur(16px);
           border: 1px solid rgba(212, 175, 55, 0.2);
           padding: 3rem;
           opacity: 0;
@@ -165,7 +159,6 @@
           color: var(--bg-deep);
         }
 
-        /* Vue d'accueil (centrée au début) */
         #panel-accueil {
           left: 50%;
           right: auto;
@@ -180,43 +173,37 @@
 </head>
 <body>
 
-    <!-- Conteneur 3D WebGL -->
     <div id="webgl-container"></div>
 
-    <!-- Interface utilisateur superposée -->
     <div class="ui-layer">
         <header class="interactive">
             <div class="logo">ATELIER <span>VECTR</span></div>
             <nav class="nav-menu">
                 <button onclick="goToSection('accueil', 0, 4, 10)" class="active">Accueil</button>
-                <button onclick="goToSection('studio', -3, 2, 2)">Studio</button>
+                <button onclick="goToSection('studio', -2.5, 2, 2)">Studio</button>
                 <button onclick="goToSection('projets', 3, 2, 2)">Projets</button>
-                <button onclick="goToSection('contact', 0, 1, 5)">Contact</button>
+                <button onclick="goToSection('contact', 0, 2, 4)">Contact</button>
             </nav>
         </header>
 
-        <!-- Panneau Accueil -->
         <div id="panel-accueil" class="content-panel active interactive">
             <h2>L'Art de l'Espace Intérieur</h2>
             <p>Conception d'intérieurs feutrés, sur-mesure et intemporels. Explorez la pièce interactivement ou utilisez le menu.</p>
             <button class="btn-gold" onclick="goToSection('projets', 3, 2, 2)">Découvrir nos univers</button>
         </div>
 
-        <!-- Panneau Studio -->
         <div id="panel-studio" class="content-panel interactive">
             <h2>Le Studio & La Vision</h2>
             <p>Une écriture architecturale axée sur la noblesse des matières (bois sombres, pierres mates, textiles texturés) et la maîtrise absolue de la lumière douce.</p>
             <button class="btn-gold">En savoir plus</button>
         </div>
 
-        <!-- Panneau Projets -->
         <div id="panel-projets" class="content-panel interactive">
             <h2>Réalisations & Résidences</h2>
             <p>Découvrez nos derniers chantiers livrés : appartements parisiens, lofts baignés de lumière et sanctuaires résidentiels haut de gamme.</p>
             <button class="btn-gold">Voir la galerie</button>
         </div>
 
-        <!-- Panneau Contact -->
         <div id="panel-contact" class="content-panel interactive">
             <h2>Initier un Projet</h2>
             <p>Vous avez un projet d'architecture d'intérieur d'envergure ? Discutons de votre vision et de l'accompagnement sur-mesure de notre atelier.</p>
@@ -224,21 +211,19 @@
         </div>
 
         <div class="instruction-bar">
-            [ Interactive 3D Environment ] // Cliquez sur les éléments de la pièce ou utilisez le menu
+            [ Espace 3D Interactif ] // Cliquez sur le canapé (Projets), le bureau (Studio) ou le coin salon
         </div>
     </div>
 
-    <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // --- CONFIGURATION DE LA SCÈNE 3D (COSYS & LUXE) ---
         const container = document.getElementById('webgl-container');
         
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x131A17);
-        scene.fog = new THREE.FogExp2(0x131A17, 0.05);
+        scene.fog = new THREE.FogExp2(0x131A17, 0.04);
 
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 4, 10);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -246,96 +231,136 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // --- ÉCLAIRAGE FEUTRÉ ET CHALEUREUX ---
-        const ambientLight = new THREE.AmbientLight(0x2a3530, 1.5);
+        // --- ÉCLAIRAGE ARCHITECTURAL ---
+        const ambientLight = new THREE.AmbientLight(0x223028, 1.2);
         scene.add(ambientLight);
 
-        // Lumière principale style "lampe design" dorée
-        const goldLight = new THREE.PointLight(0xFFD700, 2, 15);
-        goldLight.position.set(0, 4, 0);
-        scene.add(goldLight);
+        // Suspension lumineuse centrale chaude (Dorée)
+        const pendantLight = new THREE.PointLight(0xFFD700, 2.5, 12);
+        pendantLight.position.set(0, 4.5, 0);
+        scene.add(pendantLight);
 
-        // --- DESIGN DE LA PIÈCE 3D ---
-        // Le Sol (effet parquet ou béton ciré sombre)
-        const floorGeo = new THREE.PlaneGeometry(12, 12);
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0x18221D, roughness: 0.4 });
+        // --- CONSTRUCTION DE LA PIÈC E (MURS & SOL) ---
+        const floorGeo = new THREE.PlaneGeometry(16, 16);
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x16201C, roughness: 0.3 });
         const floor = new THREE.Mesh(floorGeo, floorMat);
         floor.rotation.x = -Math.PI / 2;
         scene.add(floor);
 
-        // Élément 1 : Le coin "Studio" (ex: un bloc bureau/bibliothèque texturé)
-        const studioObjGeo = new THREE.BoxGeometry(1.8, 2.5, 0.8);
-        const studioObjMat = new THREE.MeshStandardMaterial({ color: 0x24322C, roughness: 0.6 });
-        const studioMesh = new THREE.Mesh(studioObjGeo, studioObjMat);
-        studioMesh.position.set(-3, 1.25, -1);
-        scene.add(studioMesh);
+        // Mur du fond
+        const backWallGeo = new THREE.PlaneGeometry(16, 10);
+        const backWallMat = new THREE.MeshStandardMaterial({ color: 0x1A2621, roughness: 0.8 });
+        const backWall = new THREE.Mesh(backWallGeo, backWallMat);
+        backWall.position.set(0, 5, -8);
+        scene.add(backWall);
 
-        // Élément 2 : Le coin "Projets" (ex: un pan de mur design / cloison architecturale)
-        const projectObjGeo = new THREE.BoxGeometry(2.2, 3, 0.4);
-        const projectObjMat = new THREE.MeshStandardMaterial({ color: 0x1E2B25, roughness: 0.5 });
-        const projectMesh = new THREE.Mesh(projectObjGeo, projectObjMat);
-        projectMesh.position.set(3, 1.5, -2);
-        scene.add(projectMesh);
+        // Mur latéral gauche
+        const leftWall = new THREE.Mesh(backWallGeo, backWallMat);
+        leftWall.rotation.y = Math.PI / 2;
+        leftWall.position.set(-8, 5, 0);
+        scene.add(leftWall);
 
-        // --- SYSTÈME DE TRANSITION / ANIMATION DE CAMÉRA ---
+
+        // --- CRÉATION DU MOBILIER (ESPACE INTERACTIVE) ---
+
+        // 1. Le Canapé Cosy (Cliquable -> Section Projets)
+        const sofaGroup = new THREE.Group();
+        const seatMat = new THREE.MeshStandardMaterial({ color: 0x2A3832, roughness: 0.7 }); // Tissu vert feutré
+        
+        // Assise
+        const seatGeo = new THREE.BoxGeometry(3.5, 0.6, 1.5);
+        const seat = new THREE.Mesh(seatGeo, seatMat);
+        seat.position.set(3, 0.3, -2);
+        sofaGroup.add(seat);
+
+        // Dossier
+        const backGeo = new THREE.BoxGeometry(3.5, 1.2, 0.4);
+        const back = new THREE.Mesh(backGeo, seatMat);
+        back.position.set(3, 1.2, -2.6);
+        sofaGroup.add(back);
+        scene.add(sofaGroup);
+        const projectMesh = seat; // L'assise sert de déclencheur pour les projets
+
+
+        // 2. Le Bureau / Espace Studio (Cliquable -> Section Studio)
+        const deskGroup = new THREE.Group();
+        const woodMat = new THREE.MeshStandardMaterial({ color: 0x302217, roughness: 0.5 }); // Bois sombre noyer
+        
+        // Plateau de bureau
+        const deskTopGeo = new THREE.BoxGeometry(2.2, 0.1, 1);
+        const deskTop = new THREE.Mesh(deskTopGeo, woodMat);
+        deskTop.position.set(-2.5, 1.1, -1.5);
+        deskGroup.add(deskTop);
+
+        // Pieds de bureau métalliques
+        const legGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.1);
+        const metalMat = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.8, roughness: 0.2 });
+        const leg1 = new THREE.Mesh(legGeo, metalMat);
+        leg1.position.set(-3.4, 0.55, -1.8);
+        const leg2 = new THREE.Mesh(legGeo, metalMat);
+        leg2.position.set(-1.6, 0.55, -1.8);
+        deskGroup.add(leg1);
+        deskGroup.add(leg2);
+        scene.add(deskGroup);
+        const studioMesh = deskTop; // Le bureau sert de déclencheur pour le studio
+
+
+        // 3. Table basse centrale
+        const tableGeo = new THREE.BoxGeometry(1.2, 0.4, 1.2);
+        const tableMat = new THREE.MeshStandardMaterial({ color: 0x1F2B26, roughness: 0.2 });
+        const table = new THREE.Mesh(tableGeo, tableMat);
+        table.position.set(2, 0.2, -0.5);
+        scene.add(table);
+
+
+        // --- ANIMATION DE CAMÉRA & INTERACTION ---
         let targetCameraPos = { x: 0, y: 4, z: 10 };
         let targetLookAt = { x: 0, y: 1.5, z: 0 };
         let currentLookAt = { x: 0, y: 1.5, z: 0 };
 
         function goToSection(sectionId, posX, posY, posZ) {
-            // Gestion des classes UI (panneaux)
             document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
             document.getElementById('panel-' + sectionId).classList.add('active');
 
-            // Gestion des boutons de menu actifs
             document.querySelectorAll('.nav-menu button').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
 
-            // Définition de la nouvelle position cible de la caméra en mode fluide
             targetCameraPos = { x: posX, y: posY, z: posZ };
             
-            // Ajuster le point regardé selon l'objet cliqué
-            if(sectionId === 'studio') targetLookAt = { x: -3, y: 1.25, z: -1 };
-            else if(sectionId === 'projets') targetLookAt = { x: 3, y: 1.5, z: -2 };
+            if(sectionId === 'studio') targetLookAt = { x: -2.5, y: 1.1, z: -1.5 };
+            else if(sectionId === 'projets') targetLookAt = { x: 3, y: 0.8, z: -2 };
             else targetLookAt = { x: 0, y: 1.5, z: 0 };
         }
 
-        // --- INTERACTION CLIC SUR LES OBJETS 3D (RAYCASTING) ---
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
         window.addEventListener('click', (event) => {
-            // Ignorer si on clique sur l'interface UI
             if(event.target.closest('.interactive')) return;
 
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
             raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects([studioMesh, projectMesh]);
+            const intersects = raycaster.intersectObjects([projectMesh, studioMesh]);
 
             if (intersects.length > 0) {
                 const clicked = intersects[0].object;
                 if (clicked === studioMesh) {
-                    // Simule un clic sur le menu Studio
                     document.querySelectorAll('.nav-menu button')[1].click();
                 } else if (clicked === projectMesh) {
-                    // Simule un clic sur le menu Projets
                     document.querySelectorAll('.nav-menu button')[2].click();
                 }
             }
         });
 
-        // --- BOUCLE D'ANIMATION FLUIDE (LERP) ---
         function animate() {
             requestAnimationFrame(animate);
 
-            // Interpolation fluide (Lerp) de la position de la caméra
             camera.position.x += (targetCameraPos.x - camera.position.x) * 0.05;
             camera.position.y += (targetCameraPos.y - camera.position.y) * 0.05;
             camera.position.z += (targetCameraPos.z - camera.position.z) * 0.05;
 
-            // Interpolation fluide du point visé (LookAt)
             currentLookAt.x += (targetLookAt.x - currentLookAt.x) * 0.05;
             currentLookAt.y += (targetLookAt.y - currentLookAt.y) * 0.05;
             currentLookAt.z += (targetLookAt.z - currentLookAt.z) * 0.05;
@@ -345,7 +370,6 @@
         }
         animate();
 
-        // Gestion du redimensionnement de la fenêtre
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
