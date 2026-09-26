@@ -8,7 +8,7 @@
     <style>
         :root {
           --bg-deep: #131A17;        
-          --bg-card: rgba(19, 26, 23, 0.9); 
+          --bg-card: rgba(19, 26, 23, 0.88); 
           --accent-gold: #D4AF37;    
           --text-main: #F4F4F2;      
           --text-muted: #9DA8A2;     
@@ -29,15 +29,39 @@
           height: 100vh;
         }
 
-        #webgl-container {
+        /* Image d'arrière-plan immersive avec effet de zoom subtil */
+        .bg-image-container {
           position: fixed;
           top: 0;
           left: 0;
           width: 100vw;
           height: 100vh;
           z-index: 1;
+          overflow: hidden;
         }
 
+        .bg-image-container img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          filter: brightness(0.65) contrast(1.1);
+          transform: scale(1);
+          transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), filter 0.6s ease;
+        }
+
+        /* Voile assombrissant pour faire ressortir le texte */
+        .overlay-gradient {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: linear-gradient(to right, rgba(19, 26, 23, 0.85) 0%, rgba(19, 26, 23, 0.4) 100%);
+          z-index: 2;
+          pointer-events: none;
+        }
+
+        /* Interface utilisateur (UI) */
         .ui-layer {
           position: fixed;
           top: 0;
@@ -45,11 +69,11 @@
           width: 100vw;
           height: 100vh;
           z-index: 10;
-          pointer-events: none;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
           padding: 3rem 4rem;
+          pointer-events: none;
         }
 
         .interactive {
@@ -103,16 +127,17 @@
           text-transform: uppercase;
         }
 
+        /* Panneaux de contenu One-Page */
         .content-panel {
           position: absolute;
           top: 50%;
-          right: 6rem;
-          transform: translateY(-50%);
-          width: 450px;
+          left: 4rem;
+          transform: translateY(-50%) translateX(-20px);
+          width: 500px;
           background: var(--bg-card);
           backdrop-filter: blur(16px);
-          border: 1px solid rgba(212, 175, 55, 0.2);
-          padding: 3rem;
+          border: 1px solid rgba(212, 175, 55, 0.25);
+          padding: 3.5rem;
           opacity: 0;
           visibility: hidden;
           transition: opacity 0.6s ease, transform 0.6s ease;
@@ -128,10 +153,11 @@
 
         .content-panel h2 {
           font-family: 'Cormorant Garamond', serif;
-          font-size: 2.5rem;
+          font-size: 2.8rem;
           font-weight: 400;
           margin-bottom: 1rem;
           letter-spacing: 1px;
+          line-height: 1.1;
         }
 
         .content-panel p {
@@ -158,52 +184,50 @@
           background-color: var(--accent-gold);
           color: var(--bg-deep);
         }
-
-        #panel-accueil {
-          left: 50%;
-          right: auto;
-          transform: translate(-50%, -50%);
-          text-align: center;
-          width: 600px;
-        }
-        #panel-accueil.active {
-          transform: translate(-50%, -50%);
-        }
     </style>
 </head>
 <body>
 
-    <div id="webgl-container"></div>
+    <!-- Arrière-plan photo d'intérieur cosy et luxueux -->
+    <div class="bg-image-container">
+        <img id="room-bg" src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=85" alt="Intérieur Cosy Atelier VECTR">
+    </div>
+    <div class="overlay-gradient"></div>
 
+    <!-- Interface utilisateur -->
     <div class="ui-layer">
         <header class="interactive">
             <div class="logo">ATELIER <span>VECTR</span></div>
             <nav class="nav-menu">
-                <button onclick="goToSection('accueil', 0, 4, 10)" class="active">Accueil</button>
-                <button onclick="goToSection('studio', -2.5, 2, 2)">Studio</button>
-                <button onclick="goToSection('projets', 3, 2, 2)">Projets</button>
-                <button onclick="goToSection('contact', 0, 2, 4)">Contact</button>
+                <button onclick="switchSection('accueil', 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2000&q=85')" class="active">Accueil</button>
+                <button onclick="switchSection('studio', 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=2000&q=85')">Studio</button>
+                <button onclick="switchSection('projets', 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=85')">Projets</button>
+                <button onclick="switchSection('contact', 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=2000&q=85')">Contact</button>
             </nav>
         </header>
 
+        <!-- Panneau Accueil -->
         <div id="panel-accueil" class="content-panel active interactive">
             <h2>L'Art de l'Espace Intérieur</h2>
-            <p>Conception d'intérieurs feutrés, sur-mesure et intemporels. Explorez la pièce interactivement ou utilisez le menu.</p>
-            <button class="btn-gold" onclick="goToSection('projets', 3, 2, 2)">Découvrir nos univers</button>
+            <p>Conception d'intérieurs feutrés, sur-mesure et intemporels. Nous façonnons des sanctuaires résidentiels où la matière et la lumière ne font qu'un.</p>
+            <button class="btn-gold" onclick="document.querySelectorAll('.nav-menu button')[2].click()">Découvrir nos univers</button>
         </div>
 
+        <!-- Panneau Studio -->
         <div id="panel-studio" class="content-panel interactive">
             <h2>Le Studio & La Vision</h2>
-            <p>Une écriture architecturale axée sur la noblesse des matières (bois sombres, pierres mates, textiles texturés) et la maîtrise absolue de la lumière douce.</p>
+            <p>Une écriture architecturale axée sur la noblesse des matières brutes, les tons enveloppants et une maîtrise absolue de la lumière douce et chaleureuse.</p>
             <button class="btn-gold">En savoir plus</button>
         </div>
 
+        <!-- Panneau Projets -->
         <div id="panel-projets" class="content-panel interactive">
             <h2>Réalisations & Résidences</h2>
-            <p>Découvrez nos derniers chantiers livrés : appartements parisiens, lofts baignés de lumière et sanctuaires résidentiels haut de gamme.</p>
+            <p>Découvrez nos derniers chantiers livrés : appartements haussmanniens réinventés, lofts feutrés et villas contemporaines baignées de sérénité.</p>
             <button class="btn-gold">Voir la galerie</button>
         </div>
 
+        <!-- Panneau Contact -->
         <div id="panel-contact" class="content-panel interactive">
             <h2>Initier un Projet</h2>
             <p>Vous avez un projet d'architecture d'intérieur d'envergure ? Discutons de votre vision et de l'accompagnement sur-mesure de notre atelier.</p>
@@ -211,170 +235,31 @@
         </div>
 
         <div class="instruction-bar">
-            [ Espace 3D Interactif ] // Cliquez sur le canapé (Projets), le bureau (Studio) ou le coin salon
+            [ Expérience One-Page Immersive ] // Naviguez via le menu supérieur pour explorer chaque facette de l'atelier
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const container = document.getElementById('webgl-container');
-        
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x131A17);
-        scene.fog = new THREE.FogExp2(0x131A17, 0.04);
-
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 4, 10);
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-
-        // --- ÉCLAIRAGE ARCHITECTURAL ---
-        const ambientLight = new THREE.AmbientLight(0x223028, 1.2);
-        scene.add(ambientLight);
-
-        // Suspension lumineuse centrale chaude (Dorée)
-        const pendantLight = new THREE.PointLight(0xFFD700, 2.5, 12);
-        pendantLight.position.set(0, 4.5, 0);
-        scene.add(pendantLight);
-
-        // --- CONSTRUCTION DE LA PIÈC E (MURS & SOL) ---
-        const floorGeo = new THREE.PlaneGeometry(16, 16);
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0x16201C, roughness: 0.3 });
-        const floor = new THREE.Mesh(floorGeo, floorMat);
-        floor.rotation.x = -Math.PI / 2;
-        scene.add(floor);
-
-        // Mur du fond
-        const backWallGeo = new THREE.PlaneGeometry(16, 10);
-        const backWallMat = new THREE.MeshStandardMaterial({ color: 0x1A2621, roughness: 0.8 });
-        const backWall = new THREE.Mesh(backWallGeo, backWallMat);
-        backWall.position.set(0, 5, -8);
-        scene.add(backWall);
-
-        // Mur latéral gauche
-        const leftWall = new THREE.Mesh(backWallGeo, backWallMat);
-        leftWall.rotation.y = Math.PI / 2;
-        leftWall.position.set(-8, 5, 0);
-        scene.add(leftWall);
-
-
-        // --- CRÉATION DU MOBILIER (ESPACE INTERACTIVE) ---
-
-        // 1. Le Canapé Cosy (Cliquable -> Section Projets)
-        const sofaGroup = new THREE.Group();
-        const seatMat = new THREE.MeshStandardMaterial({ color: 0x2A3832, roughness: 0.7 }); // Tissu vert feutré
-        
-        // Assise
-        const seatGeo = new THREE.BoxGeometry(3.5, 0.6, 1.5);
-        const seat = new THREE.Mesh(seatGeo, seatMat);
-        seat.position.set(3, 0.3, -2);
-        sofaGroup.add(seat);
-
-        // Dossier
-        const backGeo = new THREE.BoxGeometry(3.5, 1.2, 0.4);
-        const back = new THREE.Mesh(backGeo, seatMat);
-        back.position.set(3, 1.2, -2.6);
-        sofaGroup.add(back);
-        scene.add(sofaGroup);
-        const projectMesh = seat; // L'assise sert de déclencheur pour les projets
-
-
-        // 2. Le Bureau / Espace Studio (Cliquable -> Section Studio)
-        const deskGroup = new THREE.Group();
-        const woodMat = new THREE.MeshStandardMaterial({ color: 0x302217, roughness: 0.5 }); // Bois sombre noyer
-        
-        // Plateau de bureau
-        const deskTopGeo = new THREE.BoxGeometry(2.2, 0.1, 1);
-        const deskTop = new THREE.Mesh(deskTopGeo, woodMat);
-        deskTop.position.set(-2.5, 1.1, -1.5);
-        deskGroup.add(deskTop);
-
-        // Pieds de bureau métalliques
-        const legGeo = new THREE.CylinderGeometry(0.04, 0.04, 1.1);
-        const metalMat = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.8, roughness: 0.2 });
-        const leg1 = new THREE.Mesh(legGeo, metalMat);
-        leg1.position.set(-3.4, 0.55, -1.8);
-        const leg2 = new THREE.Mesh(legGeo, metalMat);
-        leg2.position.set(-1.6, 0.55, -1.8);
-        deskGroup.add(leg1);
-        deskGroup.add(leg2);
-        scene.add(deskGroup);
-        const studioMesh = deskTop; // Le bureau sert de déclencheur pour le studio
-
-
-        // 3. Table basse centrale
-        const tableGeo = new THREE.BoxGeometry(1.2, 0.4, 1.2);
-        const tableMat = new THREE.MeshStandardMaterial({ color: 0x1F2B26, roughness: 0.2 });
-        const table = new THREE.Mesh(tableGeo, tableMat);
-        table.position.set(2, 0.2, -0.5);
-        scene.add(table);
-
-
-        // --- ANIMATION DE CAMÉRA & INTERACTION ---
-        let targetCameraPos = { x: 0, y: 4, z: 10 };
-        let targetLookAt = { x: 0, y: 1.5, z: 0 };
-        let currentLookAt = { x: 0, y: 1.5, z: 0 };
-
-        function goToSection(sectionId, posX, posY, posZ) {
+        function switchSection(sectionId, imageUrl) {
+            // Gestion des panneaux de texte
             document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
             document.getElementById('panel-' + sectionId).classList.add('active');
 
+            // Gestion des boutons actifs
             document.querySelectorAll('.nav-menu button').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
 
-            targetCameraPos = { x: posX, y: posY, z: posZ };
-            
-            if(sectionId === 'studio') targetLookAt = { x: -2.5, y: 1.1, z: -1.5 };
-            else if(sectionId === 'projets') targetLookAt = { x: 3, y: 0.8, z: -2 };
-            else targetLookAt = { x: 0, y: 1.5, z: 0 };
+            // Effet de transition fluide sur l'image d'arrière-plan
+            const bgImg = document.getElementById('room-bg');
+            bgImg.style.transform = 'scale(1.05)';
+            bgImg.style.filter = 'brightness(0.4) blur(4px)';
+
+            setTimeout(() => {
+                bgImg.src = imageUrl;
+                bgImg.style.transform = 'scale(1)';
+                bgImg.style.filter = 'brightness(0.65) contrast(1.1)';
+            }, 300);
         }
-
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        window.addEventListener('click', (event) => {
-            if(event.target.closest('.interactive')) return;
-
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects([projectMesh, studioMesh]);
-
-            if (intersects.length > 0) {
-                const clicked = intersects[0].object;
-                if (clicked === studioMesh) {
-                    document.querySelectorAll('.nav-menu button')[1].click();
-                } else if (clicked === projectMesh) {
-                    document.querySelectorAll('.nav-menu button')[2].click();
-                }
-            }
-        });
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            camera.position.x += (targetCameraPos.x - camera.position.x) * 0.05;
-            camera.position.y += (targetCameraPos.y - camera.position.y) * 0.05;
-            camera.position.z += (targetCameraPos.z - camera.position.z) * 0.05;
-
-            currentLookAt.x += (targetLookAt.x - currentLookAt.x) * 0.05;
-            currentLookAt.y += (targetLookAt.y - currentLookAt.y) * 0.05;
-            currentLookAt.z += (targetLookAt.z - currentLookAt.z) * 0.05;
-            camera.lookAt(currentLookAt.x, currentLookAt.y, currentLookAt.z);
-
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
     </script>
 </body>
 </html>
