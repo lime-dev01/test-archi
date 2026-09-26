@@ -223,7 +223,7 @@
         <header class="interactive">
             <div class="logo">ATELIER <span>VECTR</span></div>
             <div class="instruction-bar">
-                [ VISITE INTERACTIVE ] // Cliquez et glissez pour explorer le salon // Cliquez sur les balises dorées
+                [ VISITE INTERACTIVE ] // Glissez pour explorer // Cliquez sur les balises dorées
             </div>
         </header>
 
@@ -247,12 +247,12 @@
     <!-- Pannellum JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
     <script>
-        // Initialisation de la visionneuse 360 avec une vraie image d'intérieur cosy
+        // Utilisation d'une image 360 de test hébergée de manière stable par Pannellum
         const viewer = pannellum.viewer('panorama', {
             "type": "equirectangular",
-            "panorama": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Piazza_Navona%2C_Rome%2C_Italy_%28360_Panorama%29_%2812499645934%29.jpg", // Image test provisoire d'intérieur si besoin, ou on utilise une image fixe d'un salon pro
+            "panorama": "https://pannellum.org/images/alma.jpg", 
             "autoLoad": true,
-            "autoRotate": -2, // Rotation lente et élégante au démarrage
+            "autoRotate": -2,
             "compass": false,
             "hfov": 100,
             "hotSpots": [
@@ -275,7 +275,6 @@
             ]
         });
 
-        // Fonction personnalisée pour styliser les points d'intérêt cliquables
         function hotspotDiv(hotspotDiv, args) {
             hotspotDiv.classList.add('custom-hotspot');
             const inner = document.createElement('div');
@@ -292,14 +291,14 @@
         }
 
         function openModal(modalId) {
-            viewer.setAutoRotate(0); // Stoppe la rotation auto quand on lit le texte
+            viewer.setAutoRotate(0);
             document.querySelectorAll('.info-modal').forEach(m => m.classList.remove('active'));
             document.getElementById(modalId).classList.add('active');
         }
 
         function closeModal() {
             document.querySelectorAll('.info-modal').forEach(m => m.classList.remove('active'));
-            viewer.setAutoRotate(-2); //Reprend la rotation lente
+            viewer.setAutoRotate(-2);
         }
     </script>
 </body>
