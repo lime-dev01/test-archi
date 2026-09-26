@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATELIER VECTR // ARCHITECTURE</title>
-    <!-- Import d'une police plus travaillée et pro -->
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>ATELIER VECTR // ARCHITECTURE INTÉRIEURE</title>
+    <!-- Polices haut de gamme et élégantes -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-          --bg-color: #16221E;       /* Un vrai vert profond, riche et respirant */
-          --bg-card: #1E2D28;        /* Vert légèrement plus clair pour structurer */
-          --accent-color: #F3E600;   /* Jaune signalétique précis */
-          --text-main: #F4F4F2;      /* Blanc cassé lumineux */
-          --text-muted: #9BA8A2;     /* Gris-vert technique et élégant */
+          --bg-deep: #131A17;        /* Vert olive très sombre et feutré */
+          --bg-card: rgba(22, 32, 28, 0.85); /* Verre fumé vert */
+          --accent-gold: #D4AF37;    /* Or discret / champagne pour le luxe */
+          --text-main: #F4F4F2;      /* Blanc cassé chaleureux */
+          --text-muted: #9DA8A2;     /* Gris feutré */
         }
 
         * {
@@ -22,170 +22,335 @@
         }
 
         body {
-          background-color: var(--bg-color);
+          background-color: var(--bg-deep);
           color: var(--text-main);
-          font-family: 'Syne', sans-serif;
-          line-height: 1.6;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          overflow: hidden;
+          width: 100vw;
+          height: 100vh;
         }
 
-        a {
-          color: var(--text-main);
-          text-decoration: none;
-          transition: color 0.3s ease;
+        /* Canvas 3D en arrière-plan plein écran */
+        #webgl-container {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: 1;
         }
 
-        a:hover {
-          color: var(--accent-color);
+        /* Interface utilisateur (UI) superposée */
+        .ui-layer {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: 10;
+          pointer-events: none; /* Laisse passer les clics vers la 3D par défaut */
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 3rem 4rem;
         }
 
-        /* Navigation haut de gamme */
-        .site-header {
+        .interactive {
+          pointer-events: auto; /* Réactive les clics sur les éléments cliquables */
+        }
+
+        /* Header / Navigation */
+        header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 2.5rem 5rem;
-          border-bottom: 1px solid rgba(244, 244, 242, 0.1);
         }
 
         .logo {
-          font-weight: 800;
-          font-size: 1.3rem;
-          letter-spacing: 2px;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 1.5rem;
+          letter-spacing: 3px;
+          font-weight: 600;
         }
 
         .logo span {
-          color: var(--accent-color);
+          color: var(--accent-gold);
         }
 
-        .nav-links {
+        .nav-menu {
           display: flex;
-          gap: 3rem;
+          gap: 2.5rem;
           font-size: 0.85rem;
           letter-spacing: 2px;
-          font-family: 'JetBrains Mono', monospace;
-        }
-
-        .nav-links a.active {
-          color: var(--accent-color);
-        }
-
-        /* Section Hero avec espace photo pro */
-        .hero-section {
-          display: grid;
-          grid-template-columns: 1.2fr 1fr;
-          min-height: calc(100vh - 110px);
-          padding: 5rem;
-          gap: 5rem;
-          align-items: center;
-        }
-
-        .tag {
-          color: var(--accent-color);
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.85rem;
-          letter-spacing: 2px;
-          display: inline-block;
-          margin-bottom: 1rem;
-        }
-
-        .hero-content h1 {
-          font-size: 4rem;
-          line-height: 1.05;
-          margin-bottom: 1.5rem;
-          font-weight: 800;
           text-transform: uppercase;
-          letter-spacing: -1px;
         }
 
-        .hero-content p {
-          color: var(--text-muted);
-          font-size: 1.1rem;
-          max-width: 520px;
-          margin-bottom: 2.5rem;
-          font-weight: 400;
-        }
-
-        .btn-primary {
-          display: inline-block;
-          background-color: var(--accent-color);
-          color: var(--bg-color);
-          padding: 1.1rem 2.5rem;
-          font-weight: 700;
-          font-size: 0.9rem;
-          letter-spacing: 1px;
+        .nav-menu button {
+          background: none;
           border: none;
+          color: var(--text-muted);
+          font-family: inherit;
+          font-size: inherit;
+          letter-spacing: inherit;
+          cursor: pointer;
+          transition: color 0.3s ease;
+        }
+
+        .nav-menu button:hover, .nav-menu button.active {
+          color: var(--accent-gold);
+        }
+
+        /* Instructions minimalistes en bas */
+        .instruction-bar {
+          font-size: 0.75rem;
+          letter-spacing: 2px;
+          color: var(--text-muted);
+          text-transform: uppercase;
+        }
+
+        /* Panneaux de contenu (affichés selon la section active) */
+        .content-panel {
+          position: absolute;
+          top: 50%;
+          right: 6rem;
+          transform: translateY(-50%);
+          width: 450px;
+          background: var(--bg-card);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(212, 175, 55, 0.2);
+          padding: 3rem;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.6s ease, transform 0.6s ease;
+          pointer-events: none;
+        }
+
+        .content-panel.active {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: translateY(-50%) translateX(0);
+        }
+
+        .content-panel h2 {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 2.5rem;
+          font-weight: 400;
+          margin-bottom: 1rem;
+          letter-spacing: 1px;
+        }
+
+        .content-panel p {
+          color: var(--text-muted);
+          font-size: 0.95rem;
+          line-height: 1.7;
+          margin-bottom: 2rem;
+        }
+
+        .btn-gold {
+          display: inline-block;
+          background-color: transparent;
+          color: var(--text-main);
+          border: 1px solid var(--accent-gold);
+          padding: 0.8rem 1.8rem;
+          font-size: 0.8rem;
+          letter-spacing: 2px;
+          text-transform: uppercase;
           cursor: pointer;
           transition: all 0.3s ease;
         }
 
-        .btn-primary:hover {
-          background-color: var(--text-main);
-          transform: translateY(-2px);
+        .btn-gold:hover {
+          background-color: var(--accent-gold);
+          color: var(--bg-deep);
         }
 
-        /* Cadre réservé pour une superbe photo de projet */
-        .hero-image-container {
-          width: 100%;
-          height: 500px;
-          background-color: var(--bg-card);
-          border: 1px solid rgba(244, 244, 242, 0.12);
-          position: relative;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-        }
-
-        /* Simulation de l'emplacement photo (à remplacer par une balise <img> plus tard) */
-        .hero-image-container::before {
-          content: "ESPACE VISUEL PROJET // INTÉGRER PHOTO ICI";
-          color: var(--text-muted);
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.8rem;
-          letter-spacing: 1px;
+        /* Vue d'accueil (centrée au début) */
+        #panel-accueil {
+          left: 50%;
+          right: auto;
+          transform: translate(-50%, -50%);
           text-align: center;
-          padding: 2rem;
+          width: 600px;
         }
-      
-        /* Optionnel si tu veux glisser une vraie image plus tard :
-        .hero-image-container img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        } */
+        #panel-accueil.active {
+          transform: translate(-50%, -50%);
+        }
     </style>
 </head>
 <body>
 
-    <!-- Header / Navigation -->
-    <header class="site-header">
-        <div class="logo">
-            <span>VECTR //</span> ARCHI
-        </div>
-        <nav class="nav-links">
-            <a href="index.html" class="active">ACCUEIL</a>
-            <a href="apropos.html">STUDIO</a>
-            <a href="projets.html">RÉALISATIONS</a>
-            <a href="contact.html">CONTACT</a>
-        </nav>
-    </header>
+    <!-- Conteneur 3D WebGL -->
+    <div id="webgl-container"></div>
 
-    <!-- Section Hero Asymétrique & Immersive -->
-    <main class="hero-section">
-        <div class="hero-content">
-            <span class="tag">01. MANIFESTE & DIRECTION ARTISTIQUE</span>
-            <h1>L'ARCHITECTURE COMME ESSENCE.</h1>
-            <p>Atelier VECTR conçoit des espaces singuliers où la rigueur structurelle rencontre la pureté des matériaux contemporains. Une approche radicale et pérenne de l'habiter.</p>
-            <div class="hero-actions">
-                <a href="projets.html" class="btn-primary">DÉCOUVRIR LES PROJETS</a>
-            </div>
+    <!-- Interface utilisateur superposée -->
+    <div class="ui-layer">
+        <header class="interactive">
+            <div class="logo">ATELIER <span>VECTR</span></div>
+            <nav class="nav-menu">
+                <button onclick="goToSection('accueil', 0, 4, 10)" class="active">Accueil</button>
+                <button onclick="goToSection('studio', -3, 2, 2)">Studio</button>
+                <button onclick="goToSection('projets', 3, 2, 2)">Projets</button>
+                <button onclick="goToSection('contact', 0, 1, 5)">Contact</button>
+            </nav>
+        </header>
+
+        <!-- Panneau Accueil -->
+        <div id="panel-accueil" class="content-panel active interactive">
+            <h2>L'Art de l'Espace Intérieur</h2>
+            <p>Conception d'intérieurs feutrés, sur-mesure et intemporels. Explorez la pièce interactivement ou utilisez le menu.</p>
+            <button class="btn-gold" onclick="goToSection('projets', 3, 2, 2)">Découvrir nos univers</button>
         </div>
+
+        <!-- Panneau Studio -->
+        <div id="panel-studio" class="content-panel interactive">
+            <h2>Le Studio & La Vision</h2>
+            <p>Une écriture architecturale axée sur la noblesse des matières (bois sombres, pierres mates, textiles texturés) et la maîtrise absolue de la lumière douce.</p>
+            <button class="btn-gold">En savoir plus</button>
+        </div>
+
+        <!-- Panneau Projets -->
+        <div id="panel-projets" class="content-panel interactive">
+            <h2>Réalisations & Résidences</h2>
+            <p>Découvrez nos derniers chantiers livrés : appartements parisiens, lofts baignés de lumière et sanctuaires résidentiels haut de gamme.</p>
+            <button class="btn-gold">Voir la galerie</button>
+        </div>
+
+        <!-- Panneau Contact -->
+        <div id="panel-contact" class="content-panel interactive">
+            <h2>Initier un Projet</h2>
+            <p>Vous avez un projet d'architecture d'intérieur d'envergure ? Discutons de votre vision et de l'accompagnement sur-mesure de notre atelier.</p>
+            <button class="btn-gold">Prendre contact</button>
+        </div>
+
+        <div class="instruction-bar">
+            [ Interactive 3D Environment ] // Cliquez sur les éléments de la pièce ou utilisez le menu
+        </div>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // --- CONFIGURATION DE LA SCÈNE 3D (COSYS & LUXE) ---
+        const container = document.getElementById('webgl-container');
         
-        <!-- Espace dédié pour une belle photo d'architecture -->
-        <div class="hero-image-container">
-            <!-- Insère ton image ici : <img src="ton-image.jpg" alt="Projet Archi"> -->
-        </div>
-    </main>
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x131A17);
+        scene.fog = new THREE.FogExp2(0x131A17, 0.05);
 
+        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 4, 10);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        // --- ÉCLAIRAGE FEUTRÉ ET CHALEUREUX ---
+        const ambientLight = new THREE.AmbientLight(0x2a3530, 1.5);
+        scene.add(ambientLight);
+
+        // Lumière principale style "lampe design" dorée
+        const goldLight = new THREE.PointLight(0xFFD700, 2, 15);
+        goldLight.position.set(0, 4, 0);
+        scene.add(goldLight);
+
+        // --- DESIGN DE LA PIÈCE 3D ---
+        // Le Sol (effet parquet ou béton ciré sombre)
+        const floorGeo = new THREE.PlaneGeometry(12, 12);
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x18221D, roughness: 0.4 });
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.rotation.x = -Math.PI / 2;
+        scene.add(floor);
+
+        // Élément 1 : Le coin "Studio" (ex: un bloc bureau/bibliothèque texturé)
+        const studioObjGeo = new THREE.BoxGeometry(1.8, 2.5, 0.8);
+        const studioObjMat = new THREE.MeshStandardMaterial({ color: 0x24322C, roughness: 0.6 });
+        const studioMesh = new THREE.Mesh(studioObjGeo, studioObjMat);
+        studioMesh.position.set(-3, 1.25, -1);
+        scene.add(studioMesh);
+
+        // Élément 2 : Le coin "Projets" (ex: un pan de mur design / cloison architecturale)
+        const projectObjGeo = new THREE.BoxGeometry(2.2, 3, 0.4);
+        const projectObjMat = new THREE.MeshStandardMaterial({ color: 0x1E2B25, roughness: 0.5 });
+        const projectMesh = new THREE.Mesh(projectObjGeo, projectObjMat);
+        projectMesh.position.set(3, 1.5, -2);
+        scene.add(projectMesh);
+
+        // --- SYSTÈME DE TRANSITION / ANIMATION DE CAMÉRA ---
+        let targetCameraPos = { x: 0, y: 4, z: 10 };
+        let targetLookAt = { x: 0, y: 1.5, z: 0 };
+        let currentLookAt = { x: 0, y: 1.5, z: 0 };
+
+        function goToSection(sectionId, posX, posY, posZ) {
+            // Gestion des classes UI (panneaux)
+            document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + sectionId).classList.add('active');
+
+            // Gestion des boutons de menu actifs
+            document.querySelectorAll('.nav-menu button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Définition de la nouvelle position cible de la caméra en mode fluide
+            targetCameraPos = { x: posX, y: posY, z: posZ };
+            
+            // Ajuster le point regardé selon l'objet cliqué
+            if(sectionId === 'studio') targetLookAt = { x: -3, y: 1.25, z: -1 };
+            else if(sectionId === 'projets') targetLookAt = { x: 3, y: 1.5, z: -2 };
+            else targetLookAt = { x: 0, y: 1.5, z: 0 };
+        }
+
+        // --- INTERACTION CLIC SUR LES OBJETS 3D (RAYCASTING) ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        window.addEventListener('click', (event) => {
+            // Ignorer si on clique sur l'interface UI
+            if(event.target.closest('.interactive')) return;
+
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects([studioMesh, projectMesh]);
+
+            if (intersects.length > 0) {
+                const clicked = intersects[0].object;
+                if (clicked === studioMesh) {
+                    // Simule un clic sur le menu Studio
+                    document.querySelectorAll('.nav-menu button')[1].click();
+                } else if (clicked === projectMesh) {
+                    // Simule un clic sur le menu Projets
+                    document.querySelectorAll('.nav-menu button')[2].click();
+                }
+            }
+        });
+
+        // --- BOUCLE D'ANIMATION FLUIDE (LERP) ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Interpolation fluide (Lerp) de la position de la caméra
+            camera.position.x += (targetCameraPos.x - camera.position.x) * 0.05;
+            camera.position.y += (targetCameraPos.y - camera.position.y) * 0.05;
+            camera.position.z += (targetCameraPos.z - camera.position.z) * 0.05;
+
+            // Interpolation fluide du point visé (LookAt)
+            currentLookAt.x += (targetLookAt.x - currentLookAt.x) * 0.05;
+            currentLookAt.y += (targetLookAt.y - currentLookAt.y) * 0.05;
+            currentLookAt.z += (targetLookAt.z - currentLookAt.z) * 0.05;
+            camera.lookAt(currentLookAt.x, currentLookAt.y, currentLookAt.z);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Gestion du redimensionnement de la fenêtre
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
