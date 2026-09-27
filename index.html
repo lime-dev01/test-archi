@@ -11,6 +11,8 @@
 </head>
 <body>
 
+<div id="curtain"><div class="panel l"></div><div class="panel r"></div><span id="curtain-label">Atelier Orme</span></div>
+
 <header>
   <div class="logo">Atelier Orme</div>
   <nav class="menu">
@@ -29,7 +31,7 @@
   </div>
 </section>
 
-<section id="philosophie">
+<section id="philosophie" data-reveal>
   <span class="room-label">Approche</span>
   <div class="grid">
     <h2>Peu d'objets, mais chacun a une raison d'être là.</h2>
@@ -37,7 +39,7 @@
   </div>
 </section>
 
-<section id="visite">
+<section id="visite" data-reveal>
   <div class="visite-head">
     <span class="room-label">Visite</span>
     <h2>Trois pièces, un même geste</h2>
@@ -57,7 +59,7 @@
   <div id="panel"><span class="sub" id="pSub"></span><h3 id="pTitle"></h3><p id="pDesc"></p></div>
 </section>
 
-<section id="projets">
+<section id="projets" data-reveal>
   <h2>Projets sélectionnés</h2>
   <div class="plist" id="plist"></div>
 </section>
@@ -73,9 +75,21 @@
   </div>
   <div class="bottom">
     <span>Atelier Orme — studio fictif de démonstration · photos sous licence Unsplash</span>
-    <a class="link" href="#hero">Retour en haut ↑</a>
+    <span><button class="link linklike" id="openMentions">Mentions légales</button> · <a class="link" href="#hero">Retour en haut ↑</a></span>
   </div>
 </footer>
+
+<div class="overlay" id="mentionsOverlay">
+  <div class="modal">
+    <button class="close" id="closeMentions" aria-label="Fermer">×</button>
+    <h3>Mentions légales</h3>
+    <p><strong>Éditeur du site</strong> — Atelier Orme, studio fictif créé à titre de démonstration. Aucune activité commerciale réelle n'est associée à ce nom.</p>
+    <p><strong>Directeur de la publication</strong> — À compléter par l'exploitant réel du site.</p>
+    <p><strong>Hébergement</strong> — À compléter selon l'hébergeur choisi lors de la mise en ligne.</p>
+    <p><strong>Crédits photographiques</strong> — Clay Banks, Zac Gudakov et nine koepfer, via Unsplash, sous licence Unsplash (unsplash.com/license).</p>
+    <p><strong>Propriété intellectuelle</strong> — Textes et code de ce site fournis à titre d'exemple ; à adapter avant toute mise en ligne publique.</p>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>

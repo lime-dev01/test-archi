@@ -1,31 +1,62 @@
 // ---------- Données des pièces (photos libres de droits, licence Unsplash) ----------
+// Remarque : les coordonnées x/y sont une estimation raisonnable de la composition
+// (photo grand-angle classique) — ajuste-les de quelques % en les comparant à l'image
+// ouverte dans un nouvel onglet si un point ne tombe pas exactement sur l'élément.
 const rooms = {
   salon: {
     photo: "https://images.unsplash.com/photo-1680965585463-386646047473?fm=jpg&q=80&w=2400&auto=format&fit=crop",
     credit: "Clay Banks / Unsplash",
     spots: [
-      { x: 38, y: 62, zoom: 2.4, title:"Canapé", sub:"Assise basse, tissu texturé", desc:"Placé face à la pièce plutôt qu'au mur, il invite à la conversation plutôt qu'à l'écran." },
-      { x: 68, y: 40, zoom: 2.6, title:"Applique murale", sub:"Laiton brossé", desc:"Une lumière chaude et basse, allumée en soirée pour remplacer l'éclairage principal." },
-      { x: 20, y: 30, zoom: 2.2, title:"Bibliothèque", sub:"Bois brut", desc:"Rangement ouvert pensé pour vieillir avec les objets qu'il accueille." },
+      { x: 40, y: 66, zoom: 2.3, title:"Canapé", sub:"Assise grise, coussins texturés", desc:"Bas et profond, tourné vers la pièce plutôt que vers un écran — pensé pour la conversation." },
+      { x: 66, y: 34, zoom: 2.4, title:"Toile murale", sub:"Accrochage sur mur lambrissé", desc:"Une seule pièce accrochée sur le bois, plutôt qu'une collection — pour laisser respirer le mur." },
+      { x: 20, y: 48, zoom: 2.5, title:"Lampe d'appoint", sub:"Lumière basse et chaude", desc:"Complète la lumière naturelle en fin de journée sans jamais dominer la pièce." },
     ]
   },
   cuisine: {
     photo: "https://images.unsplash.com/photo-1682888813734-b1b0a4f79385?fm=jpg&q=80&w=2400&auto=format&fit=crop",
     credit: "Zac Gudakov / Unsplash",
     spots: [
-      { x: 46, y: 58, zoom: 2.3, title:"Îlot central", sub:"Bois massif, plan de travail continu", desc:"Pensé pour rassembler — plan de travail d'un seul tenant, sans joint visible." },
-      { x: 74, y: 35, zoom: 2.4, title:"Rangements hauts", sub:"Laque mate", desc:"Une façade continue qui efface la frontière entre rangement et mur." },
+      { x: 44, y: 60, zoom: 2.2, title:"Îlot central", sub:"Façade blanche, plan de travail bois", desc:"Le cœur de la pièce — assez large pour cuisiner à deux sans se gêner." },
+      { x: 72, y: 68, zoom: 2.5, title:"Tabouret de bar", sub:"Bois clair", desc:"Installé côté îlot pour transformer la cuisine en lieu de passage et de discussion." },
     ]
   },
   chambre: {
     photo: "https://images.unsplash.com/photo-1552558636-f6a8f071c2b3?fm=jpg&q=80&w=2400&auto=format&fit=crop",
     credit: "nine koepfer / Unsplash",
     spots: [
-      { x: 42, y: 56, zoom: 2.3, title:"Tête de lit basse", sub:"Bois naturel", desc:"Une ligne basse qui garde la pièce silencieuse et ouverte sur la lumière du matin." },
-      { x: 78, y: 42, zoom: 2.5, title:"Coin lecture", sub:"Lin lavé", desc:"Un point de calme supplémentaire, à l'écart du lit, pensé pour ralentir avant de dormir." },
+      { x: 50, y: 62, zoom: 2.2, title:"Lit bas", sub:"Linge de lit naturel", desc:"Une silhouette basse qui garde la chambre silencieuse et laisse le regard filer vers la fenêtre." },
+      { x: 22, y: 50, zoom: 2.6, title:"Plante", sub:"Feuillage près du lit", desc:"La seule touche végétale de la pièce — juste assez pour apporter de la vie sans surcharger." },
     ]
   }
 };
+
+// ---------- Rideau d'ouverture ----------
+window.addEventListener('load', ()=>{
+  setTimeout(()=>document.getElementById('curtain').classList.add('open'), 250);
+});
+
+// ---------- Parallax sur le héro ----------
+const heroPhoto = document.querySelector('.hero-photo');
+const heroSection = document.getElementById('hero');
+addEventListener('scroll', ()=>{
+  const r = heroSection.getBoundingClientRect();
+  if (r.bottom > 0){
+    heroPhoto.style.transform = `translateY(${window.scrollY * 0.18}px)`;
+  }
+}, {passive:true});
+
+// ---------- Révélation des sections au scroll ----------
+const revealIO = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{ if(en.isIntersecting) en.target.classList.add('in'); });
+}, {threshold:.15});
+document.querySelectorAll('[data-reveal]').forEach(el=>revealIO.observe(el));
+
+// ---------- Mentions légales ----------
+const mentionsOverlay = document.getElementById('mentionsOverlay');
+document.getElementById('openMentions').addEventListener('click', ()=>mentionsOverlay.classList.add('open'));
+document.getElementById('closeMentions').addEventListener('click', ()=>mentionsOverlay.classList.remove('open'));
+mentionsOverlay.addEventListener('click', e=>{ if(e.target===mentionsOverlay) mentionsOverlay.classList.remove('open'); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') mentionsOverlay.classList.remove('open'); });
 
 // ---------- Visite interactive ----------
 const scene = document.getElementById('scene');
@@ -41,16 +72,21 @@ function loadRoom(key){
   currentRoom = key;
   closeSpot();
   const r = rooms[key];
-  photo.src = r.photo;
-  document.querySelectorAll('.hotspot').forEach(h=>h.remove());
-  r.spots.forEach(s=>{
-    const h = document.createElement('button');
-    h.className='hotspot';
-    h.style.left = s.x+'%'; h.style.top = s.y+'%';
-    h.setAttribute('aria-label', s.title);
-    h.addEventListener('click', ()=>openSpot(s));
-    scene.appendChild(h);
-  });
+  document.querySelectorAll('.hotspot').forEach(h=>h.style.opacity='0');
+  photo.classList.add('swap');
+  setTimeout(()=>{
+    photo.src = r.photo;
+    photo.classList.remove('swap');
+    document.querySelectorAll('.hotspot').forEach(h=>h.remove());
+    r.spots.forEach(s=>{
+      const h = document.createElement('button');
+      h.className='hotspot';
+      h.style.left = s.x+'%'; h.style.top = s.y+'%';
+      h.setAttribute('aria-label', s.title);
+      h.addEventListener('click', ()=>openSpot(s));
+      scene.appendChild(h);
+    });
+  }, 380);
   tabs.forEach(t=>t.classList.toggle('active', t.dataset.room===key));
 }
 
