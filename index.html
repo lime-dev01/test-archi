@@ -3,202 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Atelier Orme — Rendu 3D du salon</title>
-<style>
-  html,body{margin:0;height:100%;overflow:hidden;background:#1b1712;font-family:'Segoe UI',Arial,sans-serif;}
-  canvas{display:block;}
-  #ui{position:fixed;top:22px;left:26px;color:#EDE6D8;pointer-events:none;}
-  #ui h1{font-size:1.05rem;font-weight:500;margin:0 0 4px;letter-spacing:.3px;}
-  #ui p{font-size:.8rem;margin:0;opacity:.55;}
-  #loading{position:fixed;inset:0;background:#1b1712;color:#EDE6D8;display:flex;align-items:center;justify-content:center;font-size:.85rem;opacity:.7;z-index:10;}
-</style>
+<title>Atelier Orme — Architecture d'intérieur</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,500;1,9..144,420&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div id="loading">Chargement de la scène…</div>
-<div id="ui">
-  <h1>Atelier Orme — Salon</h1>
-  <p>Glisser pour tourner · molette pour zoomer</p>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x1b1712);
-scene.fog = new THREE.Fog(0x1b1712, 8, 18);
 
-const renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputEncoding = THREE.sRGBEncoding;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
-document.body.appendChild(renderer.domElement);
+<header>
+  <div class="logo">Atelier Orme</div>
+  <nav class="menu">
+    <a href="#philosophie">Philosophie</a><a href="#visite">Visite</a><a href="#projets">Projets</a><a href="#contact">Contact</a>
+  </nav>
+</header>
 
-const camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.1, 60);
+<section id="hero">
+  <img class="hero-photo" src="https://images.unsplash.com/photo-1682888813734-b1b0a4f79385?fm=jpg&q=70&w=2400&auto=format&fit=crop" alt="">
+  <div class="hero-shade"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">Studio d'architecture d'intérieur, Paris</span>
+    <h1>Habiter la <em>lumière</em>, pièce après pièce.</h1>
+    <p>Atelier Orme dessine des intérieurs sur mesure — matières brutes, proportions justes, lumière comme premier matériau.</p>
+    <a class="cta" href="#visite">Visiter le salon ↓</a>
+  </div>
+</section>
 
-// ---------- Materials ----------
-const matFloor   = new THREE.MeshStandardMaterial({color:0x6b4a30, roughness:0.75, metalness:0.05});
-const matWall    = new THREE.MeshStandardMaterial({color:0xE7E0D2, roughness:0.95});
-const matWallSide= new THREE.MeshStandardMaterial({color:0xDCD3C0, roughness:0.95});
-const matSofa    = new THREE.MeshStandardMaterial({color:0x8B4A3C, roughness:0.65});
-const matSofaDk  = new THREE.MeshStandardMaterial({color:0x6f3a2f, roughness:0.65});
-const matWood    = new THREE.MeshStandardMaterial({color:0x3a2a1c, roughness:0.4, metalness:0.1});
-const matBrass   = new THREE.MeshStandardMaterial({color:0xA9814A, roughness:0.35, metalness:0.75});
-const matRug     = new THREE.MeshStandardMaterial({color:0x9c5b42, roughness:0.9});
-const matLeaf    = new THREE.MeshStandardMaterial({color:0x4B5842, roughness:0.8});
-const matPot     = new THREE.MeshStandardMaterial({color:0x2a241d, roughness:0.6});
-const matGlow    = new THREE.MeshStandardMaterial({color:0xFFEFD2, emissive:0xFFDFA6, emissiveIntensity:1.4, roughness:1});
-const matMullion = new THREE.MeshStandardMaterial({color:0x241e18, roughness:0.6});
+<section id="philosophie">
+  <span class="room-label">Approche</span>
+  <div class="grid">
+    <h2>Peu d'objets, mais chacun a une raison d'être là.</h2>
+    <p>Atelier Orme conçoit des intérieurs sur mesure pour des lieux de vie et des maisons d'hôtes indépendantes. Chaque projet part d'une contrainte réelle — une lumière, une structure, une matière locale — plutôt que d'un style imposé. Le studio accompagne le projet du plan à la dernière pièce posée, en lien direct avec les artisans.</p>
+  </div>
+</section>
 
-// ---------- Room shell ----------
-const ROOM_W=8, ROOM_D=6, ROOM_H=3;
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_W, ROOM_D), matFloor);
-floor.rotation.x = -Math.PI/2; floor.receiveShadow = true;
-scene.add(floor);
+<section id="visite">
+  <div class="visite-head">
+    <span class="room-label">Visite</span>
+    <h2>Trois pièces, un même geste</h2>
+    <div class="room-tabs">
+      <button class="tab active" data-room="salon">Salon</button>
+      <button class="tab" data-room="cuisine">Cuisine</button>
+      <button class="tab" data-room="chambre">Chambre</button>
+    </div>
+  </div>
 
-const backWall = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_W, ROOM_H), matWall);
-backWall.position.set(0, ROOM_H/2, -ROOM_D/2); backWall.receiveShadow = true;
-scene.add(backWall);
+  <div id="scene">
+    <img id="photo" src="" alt="">
+    <div id="shade"></div>
+  </div>
+  <p class="hint">Cliquer un point pour s'approcher</p>
+  <button id="back">← Vue d'ensemble</button>
+  <div id="panel"><span class="sub" id="pSub"></span><h3 id="pTitle"></h3><p id="pDesc"></p></div>
+</section>
 
-const sideWall = new THREE.Mesh(new THREE.PlaneGeometry(ROOM_D, ROOM_H), matWallSide);
-sideWall.rotation.y = Math.PI/2;
-sideWall.position.set(-ROOM_W/2, ROOM_H/2, 0); sideWall.receiveShadow = true;
-scene.add(sideWall);
+<section id="projets">
+  <h2>Projets sélectionnés</h2>
+  <div class="plist" id="plist"></div>
+</section>
 
-// baseboard
-const baseboard = new THREE.Mesh(new THREE.BoxGeometry(ROOM_W, 0.09, 0.03), matWood);
-baseboard.position.set(0, 0.045, -ROOM_D/2+0.02);
-scene.add(baseboard);
+<footer id="contact">
+  <div>
+    <h2>Un projet à nous confier ?</h2>
+    <p>Décrivez-nous votre lieu, sa lumière, ses contraintes — nous revenons vers vous sous une semaine.</p>
+  </div>
+  <div class="cols">
+    <div><span>Écrire</span><a class="link" href="mailto:studio@atelier-orme.fr">studio@atelier-orme.fr</a></div>
+    <div><span>Atelier</span>12 rue des Tanneurs, Paris</div>
+  </div>
+  <div class="bottom">
+    <span>Atelier Orme — studio fictif de démonstration · photos sous licence Unsplash</span>
+    <a class="link" href="#hero">Retour en haut ↑</a>
+  </div>
+</footer>
 
-// ---------- Window ----------
-const winGroup = new THREE.Group();
-const glow = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 1.7), matGlow);
-glow.position.set(1.6, 1.65, -ROOM_D/2+0.02);
-winGroup.add(glow);
-function mullion(w,h,x,y){
-  const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,0.05), matMullion);
-  m.position.set(1.6+x, 1.65+y, -ROOM_D/2+0.05);
-  winGroup.add(m);
-}
-mullion(2.7,0.06,0,0); mullion(2.7,0.06,0,0.58); mullion(2.7,0.06,0,-0.58);
-mullion(0.06,1.75,-0.9,0); mullion(0.06,1.75,0.9,0);
-scene.add(winGroup);
-
-// ---------- Sofa ----------
-const sofa = new THREE.Group();
-const seat = new THREE.Mesh(new THREE.BoxGeometry(2.3,0.42,0.95), matSofa);
-seat.position.y = 0.34; seat.castShadow = seat.receiveShadow = true;
-const back = new THREE.Mesh(new THREE.BoxGeometry(2.3,0.55,0.22), matSofaDk);
-back.position.set(0,0.62,-0.37); back.rotation.x = -0.06; back.castShadow = true;
-const armL = new THREE.Mesh(new THREE.BoxGeometry(0.24,0.5,0.95), matSofaDk);
-armL.position.set(-1.13,0.5,0); armL.castShadow = true;
-const armR = armL.clone(); armR.position.x = 1.13;
-sofa.add(seat, back, armL, armR);
-sofa.position.set(1.4, 0, 1.1);
-scene.add(sofa);
-
-// ---------- Coffee table ----------
-const table = new THREE.Group();
-const top = new THREE.Mesh(new THREE.CylinderGeometry(0.55,0.55,0.05,32), matWood);
-top.position.y = 0.42; top.castShadow = top.receiveShadow = true;
-table.add(top);
-for(let a=0;a<3;a++){
-  const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,0.4,8), matBrass);
-  const ang = a*(Math.PI*2/3);
-  leg.position.set(Math.cos(ang)*0.4, 0.2, Math.sin(ang)*0.4);
-  leg.castShadow = true;
-  table.add(leg);
-}
-table.position.set(0.6, 0, 2.6);
-scene.add(table);
-
-// ---------- Rug ----------
-const rug = new THREE.Mesh(new THREE.CircleGeometry(1.7,48), matRug);
-rug.rotation.x = -Math.PI/2; rug.position.set(0.8,0.01,2.2); rug.receiveShadow = true;
-scene.add(rug);
-
-// ---------- Floor lamp ----------
-const lamp = new THREE.Group();
-const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,1.5,8), matBrass);
-pole.position.y = 0.75; pole.castShadow = true;
-const shade = new THREE.Mesh(new THREE.ConeGeometry(0.26,0.32,24,1,true), matGlow);
-shade.position.y = 1.55; shade.rotation.x = Math.PI;
-lamp.add(pole, shade);
-lamp.position.set(-2.6, 0, 0.4);
-scene.add(lamp);
-const lampLight = new THREE.PointLight(0xffcf94, 1.1, 3.5, 2);
-lampLight.position.set(-2.6, 1.5, 0.4);
-scene.add(lampLight);
-
-// ---------- Plant ----------
-const plant = new THREE.Group();
-const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.22,0.16,0.32,16), matPot);
-pot.position.y = 0.16; pot.castShadow = true;
-plant.add(pot);
-for(let i=0;i<6;i++){
-  const leaf = new THREE.Mesh(new THREE.IcosahedronGeometry(0.28,0), matLeaf);
-  leaf.position.set((Math.random()-0.5)*0.3, 0.55+Math.random()*0.35, (Math.random()-0.5)*0.3);
-  leaf.scale.set(0.8,1.3,0.8);
-  leaf.castShadow = true;
-  plant.add(leaf);
-}
-plant.position.set(-2.9, 0, 2.3);
-scene.add(plant);
-
-// ---------- Lighting ----------
-scene.add(new THREE.HemisphereLight(0xE7E0D2, 0x241e18, 0.55));
-const sun = new THREE.DirectionalLight(0xffe6bf, 1.35);
-sun.position.set(4, 4.5, -2);
-sun.target.position.set(0,1,1);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048,2048);
-sun.shadow.camera.left=-6; sun.shadow.camera.right=6; sun.shadow.camera.top=6; sun.shadow.camera.bottom=-6;
-sun.shadow.camera.far=20; sun.shadow.bias=-0.0015;
-scene.add(sun, sun.target);
-scene.add(new THREE.AmbientLight(0x2a2018, 0.4));
-
-// ---------- Orbit-style camera control (manual, no extra deps) ----------
-const target = new THREE.Vector3(0,1,0.6);
-let radius=7.2, theta=0.75, phi=1.15;
-let dragging=false, lastX=0, lastY=0;
-function updateCamera(){
-  camera.position.set(
-    target.x + radius*Math.sin(phi)*Math.sin(theta),
-    target.y + radius*Math.cos(phi),
-    target.z + radius*Math.sin(phi)*Math.cos(theta)
-  );
-  camera.lookAt(target);
-}
-updateCamera();
-const dom = renderer.domElement;
-dom.addEventListener('pointerdown', e=>{dragging=true; lastX=e.clientX; lastY=e.clientY;});
-addEventListener('pointerup', ()=>dragging=false);
-addEventListener('pointermove', e=>{
-  if(!dragging) return;
-  theta -= (e.clientX-lastX)*0.006;
-  phi   -= (e.clientY-lastY)*0.006;
-  phi = Math.max(0.5, Math.min(1.5, phi));
-  lastX=e.clientX; lastY=e.clientY;
-  updateCamera();
-});
-dom.addEventListener('wheel', e=>{
-  radius += e.deltaY*0.003;
-  radius = Math.max(3.5, Math.min(11, radius));
-  updateCamera();
-}, {passive:true});
-
-addEventListener('resize', ()=>{
-  camera.aspect = innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
-
-document.getElementById('loading').remove();
-(function animate(){
-  requestAnimationFrame(animate);
-  renderer.render(scene, camera);
-})();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
